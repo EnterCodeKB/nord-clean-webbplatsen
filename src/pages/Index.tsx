@@ -102,7 +102,7 @@ const Index = () => {
               <div className="h-48 bg-gray-200 rounded-md mb-4">
                 <img
                   className="h-52 w-96 rounded-md mb-4"
-                  src="/altan.jpeg"
+                  src="/images/altan.jpeg"
                   alt="altan"
                 />
               </div>
@@ -125,7 +125,7 @@ const Index = () => {
                 {" "}
                 <img
                   className="h-52 w-96 rounded-md mb-4"
-                  src="/terass.jpeg"
+                  src="/images/terass.jpeg"
                   alt="terrass"
                 />
               </div>
@@ -148,7 +148,7 @@ const Index = () => {
                 {" "}
                 <img
                   className="h-52 w-96 rounded-md mb-4"
-                  src="/gator.jpeg"
+                  src="/images/gator.jpeg"
                   alt="gator"
                 />
               </div>
