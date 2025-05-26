@@ -92,7 +92,9 @@ const About = () => {
                   för miljön.
                 </p>
               </div>
-              <div className="h-96 bg-gray-200 rounded-lg"></div>
+              <div className="h-96 rounded-lg">
+                <img src="/images/team.jpeg" alt="Teamet" />
+              </div>
             </div>
           </div>
         </div>
