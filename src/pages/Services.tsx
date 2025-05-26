@@ -8,7 +8,7 @@ const Services = () => {
     {
       id: "altaner",
       title: "Rengöring av altaner",
-      image: "/images/altan.jpeg",
+      image: "/images/altan.png",
       description:
         "Professionell rengöring av träaltaner som tar bort smuts, alger, mossa och mögel. Vi använder skonsamma men effektiva medel och metoder för olika typer av trä.",
       benefits: [
@@ -21,7 +21,7 @@ const Services = () => {
     {
       id: "terrasser",
       title: "Rengöring av terrasser",
-      image: "/images/terass.jpeg",
+      image: "/images/terrass.png",
 
       description:
         "Grundlig rengöring av terrasser i olika material som sten, betong och komposit. Våra specialanpassade metoder säkerställer bästa möjliga resultat utan att skada materialet.",
@@ -35,7 +35,7 @@ const Services = () => {
     {
       id: "uteplatser",
       title: "Rengöring av uteplatser",
-      image: "/images/gator.jpeg",
+      image: "/images/gator.png",
 
       description:
         "Komplett rengöringslösning för alla typer av uteplatser. Vi tar hand om alla ytor för att skapa en inbjudande och fräsch miljö runt ditt hem eller företag.",
