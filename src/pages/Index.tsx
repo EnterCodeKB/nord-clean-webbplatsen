@@ -2,6 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const Index = () => {
   const benefits = [
@@ -99,12 +106,34 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg border border-gray-100">
-              <div className="h-48 bg-gray-200 rounded-md mb-4">
-                <img
-                  className="h-52 w-96 rounded-md mb-4"
-                  src="/images/altan.png"
-                  alt="altan"
-                />
+              <div className="relative mb-4">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    <CarouselItem>
+                      <img
+                        className="h-48 w-full object-cover rounded-md"
+                        src="/images/altan.png"
+                        alt="Rengöring av altan - före"
+                      />
+                    </CarouselItem>
+                    <CarouselItem>
+                      <img
+                        className="h-48 w-full object-cover rounded-md"
+                        src="/images/terrass.png"
+                        alt="Rengöring av altan - process"
+                      />
+                    </CarouselItem>
+                    <CarouselItem>
+                      <img
+                        className="h-48 w-full object-cover rounded-md"
+                        src="/images/team.jpeg"
+                        alt="Rengöring av altan - resultat"
+                      />
+                    </CarouselItem>
+                  </CarouselContent>
+                  <CarouselPrevious className="left-2" />
+                  <CarouselNext className="right-2" />
+                </Carousel>
               </div>
               <h3 className="text-xl font-bold mb-2">Rengöring av altaner</h3>
               <p className="text-gray-600 mb-4">
