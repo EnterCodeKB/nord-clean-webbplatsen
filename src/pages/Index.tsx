@@ -1,9 +1,30 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import TextList from "../components/TextList"; // justera om du inte använder @
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase"; // justera om du inte använder @
 
 const Index = () => {
+  const [heroContent, setHeroContent] = useState({
+    title: "Laddar rubrik...",
+    description: "Laddar text...",
+  });
+
+  useEffect(() => {
+    const fetchHero = async () => {
+      const docRef = doc(db, "siteContent", "homepageHero");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setHeroContent(docSnap.data());
+      }
+    };
+
+    fetchHero();
+  }, []);
+
   const benefits = [
     { id: 1, text: "Erfaren och certifierad personal" },
     { id: 2, text: "Miljövänliga rengöringsmedel" },
@@ -51,11 +72,10 @@ const Index = () => {
               id="hero-heading"
               className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6"
             >
-              Professionell rengöring av altaner
+              {heroContent.title}
             </h1>
             <p className="text-xl text-white/90 mb-8">
-              Låt oss ta hand om din altan och uteplats. Vår professionella
-              rengöring ger nytt liv till dina utomhusytor.
+              {heroContent.description}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -255,6 +275,20 @@ const Index = () => {
           </div>
         </div>
       </section>
+      <section
+        className="py-16 md:py-24 bg-gray-50"
+        aria-labelledby="textlist-heading"
+      >
+        <div className="container mx-auto px-4">
+          <h2
+            id="textlist-heading"
+            className="text-3xl md:text-4xl font-bold mb-8 text-center"
+          >
+            Senaste nytt från PWNORD
+          </h2>
+          <TextList />
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section
@@ -269,6 +303,7 @@ const Index = () => {
             >
               Redo att fräscha upp din altan?
             </h2>
+
             <p className="text-xl text-white/90 mb-8">
               Kontakta oss idag för en kostnadsfri offert och besiktning. Vi
               hjälper dig att få dina utomhusytor att se ut som nya igen.

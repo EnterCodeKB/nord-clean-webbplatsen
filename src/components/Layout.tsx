@@ -3,10 +3,13 @@ import { Outlet, Link, NavLink } from "react-router-dom";
 import { Menu, X, Phone, Mail } from "lucide-react";
 import CookieConsent from "./CookieConsent";
 import Footer from "./Footer";
+import { useAuth } from "@/components/AuthContext"; // ✅ viktig för att få rätt path
+import LogoutButton from "@/components/LogoutButton";
 
 const Layout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,7 +38,6 @@ const Layout = () => {
         ? "text-brand-blue font-semibold"
         : "text-gray-700 hover:text-brand-blue"
     }`;
-
   return (
     <div className="flex flex-col min-h-screen">
       <header
@@ -65,6 +67,16 @@ const Layout = () => {
               <NavLink to="/kontakt" className={navLinkClasses}>
                 Kontakt
               </NavLink>
+              {/* ✅ Här visas "Admin" eller "Logga in" */}
+              {user ? (
+                <NavLink to="/admin" className={navLinkClasses}>
+                  Admin
+                </NavLink>
+              ) : (
+                <NavLink to="/login" className={navLinkClasses}>
+                  Logga in
+                </NavLink>
+              )}
             </div>
 
             <div className="hidden md:flex items-center ml-6">
@@ -136,6 +148,24 @@ const Layout = () => {
             >
               Kontakt
             </NavLink>
+            {/* 👇 Admin eller Logga in */}
+            {user ? (
+              <NavLink
+                to="/admin"
+                className={navLinkClasses}
+                onClick={closeMenu}
+              >
+                Admin
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/login"
+                className={navLinkClasses}
+                onClick={closeMenu}
+              >
+                Logga in
+              </NavLink>
+            )}
 
             <div className="border-t border-gray-200 mt-2 pt-2 space-y-2">
               <a
