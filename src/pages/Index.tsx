@@ -6,13 +6,6 @@ import { Button } from "@/components/ui/button";
 import TextList from "../components/TextList"; // justera om du inte använder @
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 
 // ✅ Definiera typ innan komponenten
 type HeroContent = {
@@ -21,7 +14,6 @@ type HeroContent = {
 };
 
 const Index = () => {
-  // ✅ Endast en useState-hook med typ
   const [heroContent, setHeroContent] = useState<HeroContent>({
     title: "Laddar rubrik...",
     description: "Laddar text...",
@@ -30,21 +22,21 @@ const Index = () => {
   useEffect(() => {
     const fetchHero = async () => {
       try {
-        const docRef = doc(db, "siteContent", "homepageHero");
+        const docRef = doc(db, "siteContent", "Homepage"); // ← exakt så!
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const data = docSnap.data() as HeroContent;
-          if (data.title && data.description) {
-            setHeroContent(data);
+          if (data.title && data.text) {
+            setHeroContent({ title: data.title, description: data.text });
           } else {
-            console.warn("❗ Felaktig datamodell i Firestore-dokumentet");
+            console.warn("⚠️ Dokumentet finns men saknar rätt fält.");
           }
         } else {
-          console.warn("❗ Dokumentet 'homepageHero' finns inte i Firestore.");
+          console.warn("⚠️ Dokumentet 'Homepage' finns inte.");
         }
       } catch (error) {
-        console.error("❌ Fel vid hämtning av heroContent:", error);
+        console.error("❌ Fel vid hämtning av innehåll:", error);
       }
     };
 
@@ -88,7 +80,7 @@ const Index = () => {
     <>
       {/* Hero Section */}
       <section
-        className="relative bg-brand-blue py-20 md:py-32"
+        className="relative bg-brand-blue py-[100px]"
         aria-labelledby="hero-heading"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-brand-darkblue to-brand-blue opacity-90"></div>
@@ -96,11 +88,11 @@ const Index = () => {
           <div className="text-center max-w-3xl mx-auto">
             <h1
               id="hero-heading"
-              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6"
+              className="text-3xl md:text-4xl font-bold text-white mb-4"
             >
               {heroContent.title}
             </h1>
-            <p className="text-xl text-white/90 mb-8">
+            <p className="text-lg text-white/90 mb-6">
               {heroContent.description}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -145,35 +137,15 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg border border-gray-100">
-              <div className="relative mb-4">
-                <Carousel className="w-full">
-                  <CarouselContent>
-                    <CarouselItem>
-                      <img
-                        className="h-48 w-full object-cover rounded-md"
-                        src="/images/altan.png"
-                        alt="Rengöring av altan - före"
-                      />
-                    </CarouselItem>
-                    <CarouselItem>
-                      <img
-                        className="h-48 w-full object-cover rounded-md"
-                        src="/images/terrass.png"
-                        alt="Rengöring av altan - process"
-                      />
-                    </CarouselItem>
-                    <CarouselItem>
-                      <img
-                        className="h-48 w-full object-cover rounded-md"
-                        src="/images/team.jpeg"
-                        alt="Rengöring av altan - resultat"
-                      />
-                    </CarouselItem>
-                  </CarouselContent>
-                  <CarouselPrevious className="left-2" />
-                  <CarouselNext className="right-2" />
-                </Carousel>
+              <div className="h-48 bg-gray-200 rounded-md mb-4">
+                {" "}
+                <img
+                  className="h-48 w-full object-cover rounded-md"
+                  src="/images/altan.png"
+                  alt="Rengöring av altan - före"
+                />
               </div>
+
               <h3 className="text-xl font-bold mb-2">Rengöring av altaner</h3>
               <p className="text-gray-600 mb-4">
                 Effektiv rengöring som tar bort smuts, mossa och alger från din

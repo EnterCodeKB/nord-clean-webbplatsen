@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase"; // justera vid behov
 import LogoutButton from "@/components/LogoutButton"; // justera sökvägen om nödvändigt
+import EditHeroForm from "@/components/admin/EditHeroForm";
 
 const AdminPage: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -12,7 +13,7 @@ const AdminPage: React.FC = () => {
 
   useEffect(() => {
     const fetchContent = async () => {
-      const docRef = doc(db, "siteContent", "homepage");
+      const docRef = doc(db, "siteContent", "Homepage");
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -27,7 +28,7 @@ const AdminPage: React.FC = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await setDoc(doc(db, "siteContent", "homepage"), {
+      await setDoc(doc(db, "siteContent", "Homepage"), {
         title,
         body,
       });
@@ -44,6 +45,7 @@ const AdminPage: React.FC = () => {
   return (
     <div className="max-w-xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Adminpanel: Startsida</h1>
+      <EditHeroForm /> {/* ← Lägg till här */}
       <label className="block mb-2 font-medium">Rubrik</label>
       <input
         type="text"
@@ -51,14 +53,12 @@ const AdminPage: React.FC = () => {
         onChange={(e) => setTitle(e.target.value)}
         className="border w-full p-2 mb-4"
       />
-
       <label className="block mb-2 font-medium">Brödtext</label>
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
         className="border w-full p-2 h-40 mb-4"
       />
-
       <button
         onClick={handleSave}
         disabled={saving}
