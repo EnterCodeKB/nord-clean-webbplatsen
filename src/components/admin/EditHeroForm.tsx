@@ -3,35 +3,27 @@
 import React, { useEffect, useState } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase";
-import styles from "./EditHeroForm.module.css"; // CSS-modul
+import styles from "./EditHeroForm.module.css";
 
-const EditHeroForm: React.FC = () => {
+const EditHeroForm = () => {
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [text, setText] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchHero = async () => {
-      try {
-        const docRef = doc(db, "siteContent", "Homepage");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setTitle(data.title || "");
-          setDescription(data.description || "");
-        } else {
-          setMessage("⚠️ Dokumentet 'Homepage' hittades inte.");
-        }
-      } catch (error) {
-        console.error("❌ Fel vid hämtning:", error);
-        setMessage("❌ Ett fel uppstod vid hämtning av datan.");
-      } finally {
-        setLoading(false);
+      const docRef = doc(db, "siteContent", "Homepage");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setTitle(data.title || "");
+        setText(data.text || "");
+      } else {
+        console.warn("❌ Dokumentet 'Homepage' hittades inte.");
       }
+      setLoading(false);
     };
-
     fetchHero();
   }, []);
 
@@ -40,44 +32,41 @@ const EditHeroForm: React.FC = () => {
     try {
       await setDoc(doc(db, "siteContent", "Homepage"), {
         title,
-        description,
+        text,
       });
-      setMessage("✅ Uppdatering sparad!");
-    } catch (error) {
-      console.error("❌ Fel vid sparning:", error);
-      setMessage("❌ Kunde inte spara ändringar.");
-    } finally {
-      setSaving(false);
+      alert("✅ Sparat!");
+    } catch (err) {
+      console.error("❌ Fel vid sparning:", err);
+      alert("❌ Kunde inte spara.");
     }
+    setSaving(false);
   };
 
-  if (loading) return <p className={styles.message}>⏳ Laddar innehåll...</p>;
+  if (loading) return <p>Laddar innehåll...</p>;
 
   return (
-    <div className={styles.wrapper}>
-      <h2 className={styles.heading}>Redigera startsidans hero-innehåll</h2>
+    <div className={styles.formWrapper}>
+      <h2>Redigera startsidans hero</h2>
 
-      <label className={styles.label}>Rubrik</label>
+      <label htmlFor="title">Rubrik</label>
       <input
-        className={styles.input}
+        id="title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Ange ny rubrik"
+        className={styles.input}
       />
 
-      <label className={styles.label}>Beskrivning</label>
+      <label htmlFor="text">Beskrivning</label>
       <textarea
+        id="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
         className={styles.textarea}
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Ange ny beskrivning"
       />
 
-      <button onClick={handleSave} disabled={saving} className={styles.button}>
+      <button onClick={handleSave} className={styles.button} disabled={saving}>
         {saving ? "Sparar..." : "Spara ändringar"}
       </button>
-
-      {message && <p className={styles.message}>{message}</p>}
     </div>
   );
 };

@@ -295,20 +295,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-      <section
-        className="py-16 md:py-24 bg-gray-50"
-        aria-labelledby="textlist-heading"
-      >
-        <div className="container mx-auto px-4">
-          <h2
-            id="textlist-heading"
-            className="text-3xl md:text-4xl font-bold mb-8 text-center"
-          >
-            Senaste nytt från PWNORD
-          </h2>
-          <TextList />
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section
