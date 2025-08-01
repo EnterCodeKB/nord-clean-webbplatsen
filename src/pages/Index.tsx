@@ -3,11 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-<<<<<<< HEAD
 import TextList from "../components/TextList"; // justera om du inte använder @
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/firebase"; // justera om du inte använder @
-=======
+import { db } from "@/firebase";
 import {
   Carousel,
   CarouselContent,
@@ -15,20 +13,38 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
->>>>>>> aa420669efd1da42d407325261f79285753f8d03
+
+// ✅ Definiera typ innan komponenten
+type HeroContent = {
+  title: string;
+  description: string;
+};
 
 const Index = () => {
-  const [heroContent, setHeroContent] = useState({
+  // ✅ Endast en useState-hook med typ
+  const [heroContent, setHeroContent] = useState<HeroContent>({
     title: "Laddar rubrik...",
     description: "Laddar text...",
   });
 
   useEffect(() => {
     const fetchHero = async () => {
-      const docRef = doc(db, "siteContent", "homepageHero");
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setHeroContent(docSnap.data());
+      try {
+        const docRef = doc(db, "siteContent", "homepageHero");
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data() as HeroContent;
+          if (data.title && data.description) {
+            setHeroContent(data);
+          } else {
+            console.warn("❗ Felaktig datamodell i Firestore-dokumentet");
+          }
+        } else {
+          console.warn("❗ Dokumentet 'homepageHero' finns inte i Firestore.");
+        }
+      } catch (error) {
+        console.error("❌ Fel vid hämtning av heroContent:", error);
       }
     };
 
