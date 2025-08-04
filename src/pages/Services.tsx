@@ -21,7 +21,16 @@ const Services = () => {
         const docRef = doc(db, "siteContent", "tjanster");
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setContent(docSnap.data());
+          setContent(
+            docSnap.data() as {
+              headerTitle: string;
+              headerText: string;
+              ctaTitle: string;
+              ctaText: string;
+              services: any[];
+              process: any[];
+            }
+          );
         } else {
           console.warn("Dokumentet 'tjanster' hittades inte.");
         }

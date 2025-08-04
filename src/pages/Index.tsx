@@ -22,13 +22,17 @@ const Index = () => {
   useEffect(() => {
     const fetchHero = async () => {
       try {
-        const docRef = doc(db, "siteContent", "Homepage"); // ← exakt så!
+        const docRef = doc(db, "siteContent", "Homepage");
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const data = docSnap.data() as HeroContent;
-          if (data.title && data.text) {
-            setHeroContent({ title: data.title, description: data.text });
+
+          if (data.title && data.description) {
+            setHeroContent({
+              title: data.title,
+              description: data.description,
+            });
           } else {
             console.warn("⚠️ Dokumentet finns men saknar rätt fält.");
           }
