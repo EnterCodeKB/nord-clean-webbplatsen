@@ -1,98 +1,207 @@
-// pages/admin/UploadTjansterData.tsx
 "use client";
 
-import React, { useEffect } from "react";
-import { doc, setDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase";
+import styles from "./EditHeroForm.module.css";
 
-const UploadTjansterData = () => {
+// Typdefinition för att lösa TypeScript-fel
+interface Service {
+  title: string;
+  description: string;
+  image: string;
+  benefits: string[];
+}
+
+interface ProcessStep {
+  title: string;
+  text: string;
+}
+
+interface TjansterData {
+  headerTitle: string;
+  headerText: string;
+  ctaTitle: string;
+  ctaText: string;
+  services: Service[];
+  process: ProcessStep[];
+}
+
+const EditTjansterForm = () => {
+  const [formData, setFormData] = useState<TjansterData>({
+    headerTitle: "",
+    headerText: "",
+    ctaTitle: "",
+    ctaText: "",
+    services: [],
+    process: [],
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
   useEffect(() => {
-    const uploadData = async () => {
-      const data = {
-        headerTitle: "Våra tjänster",
-        headerText:
-          "Professionell rengöring av utomhusytor med fokus på kvalitet och hållbarhet",
-        ctaTitle: "Behöver du hjälp med din utomhusyta?",
-        ctaText:
-          "Kontakta oss idag för en kostnadsfri konsultation. Vi skräddarsyr en lösning för dina behov.",
-        services: [
-          {
-            id: "altaner",
-            title: "Rengöring av altaner",
-            image: "/images/altan.png",
-            description:
-              "Professionell rengöring av träaltaner som tar bort smuts, alger, mossa och mögel. Vi använder skonsamma men effektiva medel och metoder för olika typer av trä.",
-            benefits: [
-              "Förlänger altanens livslängd",
-              "Förebygger halka och olyckor",
-              "Förbättrar utseendet avsevärt",
-              "Klimatsmart och miljövänlig process",
-            ],
-          },
-          {
-            id: "terrasser",
-            title: "Rengöring av terrasser",
-            image: "/images/terrass.png",
-            description:
-              "Grundlig rengöring av terrasser i olika material som sten, betong och komposit. Våra specialanpassade metoder säkerställer bästa möjliga resultat utan att skada materialet.",
-            benefits: [
-              "Anpassas efter terrassens material",
-              "Tar bort djupt ingrodd smuts",
-              "Återställer originalfärg och utseende",
-              "Professionellt utförd på kort tid",
-            ],
-          },
-          {
-            id: "uteplatser",
-            title: "Rengöring av uteplatser",
-            image: "/images/gator.png",
-            description:
-              "Komplett rengöringslösning för alla typer av uteplatser. Vi tar hand om alla ytor för att skapa en inbjudande och fräsch miljö runt ditt hem eller företag.",
-            benefits: [
-              "Helhetslösning för hela uteplatsen",
-              "Anpassade rengöringsmetoder för olika material",
-              "Förbättrar trivseln utomhus",
-              "Ökar värdet på din fastighet",
-            ],
-          },
-        ],
-        process: [
-          {
-            title: "Inspektion",
-            text: "Vi inspekterar ytan och bedömer vilken metod som är mest lämplig.",
-          },
-          {
-            title: "Prisförslag",
-            text: "Vi tar fram ett detaljerat prisförslag baserat på ytans skick och storlek.",
-          },
-          {
-            title: "Rengöring",
-            text: "Vi utför rengöringen med rätt metod och utrustning för bästa resultat.",
-          },
-          {
-            title: "Slutbesiktning",
-            text: "Vi går igenom resultatet tillsammans med dig för att säkerställa att du är nöjd.",
-          },
-        ],
-      };
-
-      try {
-        await setDoc(doc(db, "siteContent", "tjanster"), data);
-        console.log("✅ Tjänster-data har laddats upp till Firestore.");
-      } catch (error) {
-        console.error("❌ Fel vid uppladdning:", error);
+    const fetchData = async () => {
+      const docRef = doc(db, "siteContent", "tjanster");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setFormData(docSnap.data() as TjansterData);
+      } else {
+        console.warn("❌ Dokumentet 'tjanster' hittades inte.");
       }
+      setLoading(false);
     };
-
-    uploadData();
+    fetchData();
   }, []);
 
+  const handleChange = (field: keyof TjansterData, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleServiceChange = (
+    index: number,
+    field: keyof Service,
+    value: string
+  ) => {
+    const updated = [...formData.services];
+
+    if (field === "benefits") {
+      return; // hanteras separat
+    }
+
+    updated[index][field] = value as string;
+    setFormData((prev) => ({ ...prev, services: updated }));
+  };
+
+  const handleBenefitChange = (
+    serviceIndex: number,
+    benefitIndex: number,
+    value: string
+  ) => {
+    const updatedServices = [...formData.services];
+    updatedServices[serviceIndex].benefits[benefitIndex] = value;
+    setFormData((prev) => ({ ...prev, services: updatedServices }));
+  };
+
+  const handleProcessChange = (
+    index: number,
+    field: keyof ProcessStep,
+    value: string
+  ) => {
+    const updated = [...formData.process];
+    updated[index][field] = value;
+    setFormData((prev) => ({ ...prev, process: updated }));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await setDoc(doc(db, "siteContent", "tjanster"), formData);
+      alert("✅ Sparat!");
+    } catch (err) {
+      console.error("❌ Fel vid sparning:", err);
+      alert("❌ Kunde inte spara.");
+    }
+    setSaving(false);
+  };
+
+  if (loading) return <p>Laddar...</p>;
+
   return (
-    <div className="p-6 text-center">
-      <h1 className="text-2xl font-bold mb-4">Upload Tjänster-data</h1>
-      <p>✅ Datat laddas upp automatiskt när du öppnar denna sidan.</p>
+    <div className={styles.formWrapper}>
+      <h2>Redigera Tjänster-sidan</h2>
+
+      <label>Rubrik (headerTitle)</label>
+      <input
+        value={formData.headerTitle}
+        onChange={(e) => handleChange("headerTitle", e.target.value)}
+        className={styles.input}
+      />
+
+      <label>Ingress (headerText)</label>
+      <textarea
+        value={formData.headerText}
+        onChange={(e) => handleChange("headerText", e.target.value)}
+        className={styles.textarea}
+      />
+
+      <label>CTA Rubrik</label>
+      <input
+        value={formData.ctaTitle}
+        onChange={(e) => handleChange("ctaTitle", e.target.value)}
+        className={styles.input}
+      />
+
+      <label>CTA Text</label>
+      <textarea
+        value={formData.ctaText}
+        onChange={(e) => handleChange("ctaText", e.target.value)}
+        className={styles.textarea}
+      />
+
+      <h3 className="mt-6 mb-2">Tjänster</h3>
+      {formData.services.map((service, i) => (
+        <div key={i}>
+          <label>Tjänst: {service.title}</label>
+          <input
+            value={service.title}
+            onChange={(e) => handleServiceChange(i, "title", e.target.value)}
+            className={styles.input}
+          />
+          <label>Beskrivning</label>
+          <textarea
+            value={service.description}
+            onChange={(e) =>
+              handleServiceChange(i, "description", e.target.value)
+            }
+            className={styles.textarea}
+          />
+
+          <label>Bild-URL</label>
+          <input
+            value={service.image || ""}
+            onChange={(e) => handleServiceChange(i, "image", e.target.value)}
+            className={styles.input}
+          />
+
+          <label>Fördelar</label>
+          {service.benefits?.map((benefit, j) => (
+            <input
+              key={j}
+              value={benefit}
+              onChange={(e) => handleBenefitChange(i, j, e.target.value)}
+              className={styles.input}
+              style={{ marginBottom: "0.5rem" }}
+            />
+          ))}
+        </div>
+      ))}
+
+      <h3 className="mt-6 mb-2">Vår arbetsprocess</h3>
+      {formData.process.map((step, i) => (
+        <div key={i}>
+          <label>Steg: {step.title}</label>
+          <input
+            value={step.title}
+            onChange={(e) => handleProcessChange(i, "title", e.target.value)}
+            className={styles.input}
+          />
+          <label>Beskrivning</label>
+          <textarea
+            value={step.text}
+            onChange={(e) => handleProcessChange(i, "text", e.target.value)}
+            className={styles.textarea}
+          />
+        </div>
+      ))}
+
+      <button onClick={handleSave} disabled={saving} className={styles.button}>
+        {saving ? "Sparar..." : "Spara ändringar"}
+      </button>
     </div>
   );
 };
 
-export default UploadTjansterData;
+export default EditTjansterForm;
