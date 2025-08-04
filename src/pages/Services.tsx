@@ -1,52 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Services = () => {
-  const services = [
-    {
-      id: "altaner",
-      title: "Rengöring av altaner",
-      image: "/images/altan.png",
-      description:
-        "Professionell rengöring av träaltaner som tar bort smuts, alger, mossa och mögel. Vi använder skonsamma men effektiva medel och metoder för olika typer av trä.",
-      benefits: [
-        "Förlänger altanens livslängd",
-        "Förebygger halka och olyckor",
-        "Förbättrar utseendet avsevärt",
-        "Klimatsmart och miljövänlig process",
-      ],
-    },
-    {
-      id: "terrasser",
-      title: "Rengöring av terrasser",
-      image: "/images/terrass.png",
+  const [content, setContent] = useState({
+    headerTitle: "",
+    headerText: "",
+    ctaTitle: "",
+    ctaText: "",
+    services: [],
+    process: [],
+  });
 
-      description:
-        "Grundlig rengöring av terrasser i olika material som sten, betong och komposit. Våra specialanpassade metoder säkerställer bästa möjliga resultat utan att skada materialet.",
-      benefits: [
-        "Anpassas efter terrassens material",
-        "Tar bort djupt ingrodd smuts",
-        "Återställer originalfärg och utseende",
-        "Professionellt utförd på kort tid",
-      ],
-    },
-    {
-      id: "uteplatser",
-      title: "Rengöring av uteplatser",
-      image: "/images/gator.png",
-
-      description:
-        "Komplett rengöringslösning för alla typer av uteplatser. Vi tar hand om alla ytor för att skapa en inbjudande och fräsch miljö runt ditt hem eller företag.",
-      benefits: [
-        "Helhetslösning för hela uteplatsen",
-        "Anpassade rengöringsmetoder för olika material",
-        "Förbättrar trivseln utomhus",
-        "Ökar värdet på din fastighet",
-      ],
-    },
-  ];
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const docRef = doc(db, "siteContent", "tjanster");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setContent(docSnap.data());
+        } else {
+          console.warn("Dokumentet 'tjanster' hittades inte.");
+        }
+      } catch (error) {
+        console.error("Fel vid hämtning av tjanster-innehåll:", error);
+      }
+    };
+    fetchContent();
+  }, []);
 
   return (
     <>
@@ -60,12 +44,9 @@ const Services = () => {
               id="services-heading"
               className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4"
             >
-              Våra tjänster
+              {content.headerTitle}
             </h1>
-            <p className="text-xl text-white/90">
-              Professionell rengöring av utomhusytor med fokus på kvalitet och
-              hållbarhet
-            </p>
+            <p className="text-xl text-white/90">{content.headerText}</p>
           </div>
         </div>
       </section>
@@ -73,7 +54,7 @@ const Services = () => {
       <section className="py-12 md:py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            {services.map((service, index) => (
+            {content.services?.map((service, index) => (
               <div
                 key={service.id}
                 id={service.id}
@@ -107,7 +88,7 @@ const Services = () => {
                     src={service.image}
                     alt={service.title}
                     className="w-full h-64 object-cover rounded-lg"
-                  />{" "}
+                  />
                 </div>
               </div>
             ))}
@@ -127,59 +108,21 @@ const Services = () => {
             >
               Vår arbetsprocess
             </h2>
-
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 relative">
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-brand-blue text-white h-8 w-8 rounded-full flex items-center justify-center font-bold">
-                  1
+              {content.process.map((step, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 relative"
+                >
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-brand-blue text-white h-8 w-8 rounded-full flex items-center justify-center font-bold">
+                    {idx + 1}
+                  </div>
+                  <h3 className="text-lg font-bold mt-3 mb-2 text-center">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600 text-center">{step.text}</p>
                 </div>
-                <h3 className="text-lg font-bold mt-3 mb-2 text-center">
-                  Inspektion
-                </h3>
-                <p className="text-gray-600 text-center">
-                  Vi inspekterar ytan och bedömer vilken metod som är mest
-                  lämplig.
-                </p>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 relative">
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-brand-blue text-white h-8 w-8 rounded-full flex items-center justify-center font-bold">
-                  2
-                </div>
-                <h3 className="text-lg font-bold mt-3 mb-2 text-center">
-                  Prisförslag
-                </h3>
-                <p className="text-gray-600 text-center">
-                  Vi tar fram ett detaljerat prisförslag baserat på ytans skick
-                  och storlek.
-                </p>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 relative">
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-brand-blue text-white h-8 w-8 rounded-full flex items-center justify-center font-bold">
-                  3
-                </div>
-                <h3 className="text-lg font-bold mt-3 mb-2 text-center">
-                  Rengöring
-                </h3>
-                <p className="text-gray-600 text-center">
-                  Vi utför rengöringen med rätt metod och utrustning för bästa
-                  resultat.
-                </p>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 relative">
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-brand-blue text-white h-8 w-8 rounded-full flex items-center justify-center font-bold">
-                  4
-                </div>
-                <h3 className="text-lg font-bold mt-3 mb-2 text-center">
-                  Slutbesiktning
-                </h3>
-                <p className="text-gray-600 text-center">
-                  Vi går igenom resultatet tillsammans med dig för att
-                  säkerställa att du är nöjd.
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </div>
@@ -195,12 +138,9 @@ const Services = () => {
               id="services-cta-heading"
               className="text-3xl md:text-4xl font-bold text-white mb-6"
             >
-              Behöver du hjälp med din utomhusyta?
+              {content.ctaTitle}
             </h2>
-            <p className="text-xl text-white/90 mb-8">
-              Kontakta oss idag för en kostnadsfri konsultation. Vi skräddarsyr
-              en lösning för dina behov.
-            </p>
+            <p className="text-xl text-white/90 mb-8">{content.ctaText}</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 asChild

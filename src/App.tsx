@@ -15,6 +15,7 @@ import Accessibility from "./pages/Accessibility";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import { AuthProvider } from "@/components/AuthContext";
+import UploadTjansterData from "./pages/UploadTjansterData";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,10 @@ const App = () => (
               <Route path="login" element={<LoginPage />} />
               <Route path="admin" element={<AdminPage />} />
               <Route path="*" element={<NotFound />} />
+              <Route
+                path="/admin/UploadTjansterData"
+                element={<UploadTjansterData />}
+              />
             </Route>
           </Routes>
         </BrowserRouter>

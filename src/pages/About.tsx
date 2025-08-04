@@ -60,7 +60,6 @@ const About = () => {
           </div>
         </div>
       </section>
-
       <section
         className="py-12 md:py-16 bg-white"
         aria-labelledby="our-story-heading"
