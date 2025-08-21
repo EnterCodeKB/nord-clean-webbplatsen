@@ -262,8 +262,8 @@ const Index = () => {
               Vad våra kunder säger
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Vi är stolta över att ha hjälpt hundratals kunder med sina
-              utomhusytor.
+              Vi är stolta över att <strong> alla </strong> våra kunder är nöjda
+              med sina utomhusytor.
             </p>
           </div>
 

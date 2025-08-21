@@ -184,8 +184,7 @@ const Contact = () => {
                     <div>
                       <h3 className="font-semibold text-lg">Adress</h3>
                       <address className="not-italic text-gray-600">
-                        PWNORD AB <br /> Barnhusgatan 20, <br /> 111 23
-                        Stockholm
+                        PWNORD AB <br /> 111 23 Stockholm
                       </address>
                     </div>
                   </div>
